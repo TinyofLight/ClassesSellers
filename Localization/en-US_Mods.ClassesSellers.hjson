@@ -1,0 +1,31 @@
+NPCs: {
+	ClassesSellers: {
+		TownNPCMood: {
+			DislikeCrowded: No me gusta tener tan poco espacio.
+			LoveSpace: Me encanta tener tanto espacio.
+			FarFromHome: Estoy demasiado lejos de casa.
+			NoHome: Detesto no tener un hogar.
+			Content: Estoy feliz.
+			HateCrowded: Detesto tener poco espacio.
+			LikeNPC_Princess: Me gusta {NPCName}.
+			Princess_LovesNPC: Me gusta {NPCName}.
+			LikeBiome: Me gusta el biomedio {BiomeName}.
+			DislikeBiome: No me gusta el biomedio {BiomeName}.
+			LoveNPC: Adoro a {NPCName}.
+			LikeNPC: Me gusta {NPCName}.
+			DislikeNPC: "{NPCName} no me cae nada bien."
+			HateNPC: Detesto a {NPCName}.
+			HateBiome: Detesto el biomedio {BiomeName}.
+			LoveBiome: Adoro el biomedio {BiomeName}.
+		}
+
+		DisplayName: Classes Sellers
+	}
+}
+
+Items: {
+	SmallHousePlan: {
+		DisplayName: Small House Plan
+		Tooltip: ""
+	}
+}

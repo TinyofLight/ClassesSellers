@@ -1,0 +1,11 @@
+2025-06-26 21:46:24,170 - Pinky - INFO - Base de datos inicializada correctamente
+2025-06-26 21:46:39,909 - comtypes.client._code_cache - INFO - Imported existing <module 'comtypes.gen' from 'C:\\Users\\Aalbc\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\site-packages\\comtypes\\gen\\__init__.py'>
+2025-06-26 21:46:39,913 - comtypes.client._code_cache - INFO - Using writeable comtypes cache directory: 'C:\Users\Aalbc\AppData\Local\Programs\Python\Python312\Lib\site-packages\comtypes\gen'
+2025-06-26 21:46:40,322 - Pinky - INFO - Todos los sistemas configurados
+2025-06-26 21:46:56,285 - Pinky - INFO - COMMAND: segun wikipedia que es un hongo | INTENT: unknown | STATUS: FAILED | TIME: 0.00s
+2025-06-26 21:47:39,478 - Pinky - INFO - Base de datos inicializada correctamente
+2025-06-26 21:47:53,097 - comtypes.client._code_cache - INFO - Imported existing <module 'comtypes.gen' from 'C:\\Users\\Aalbc\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\site-packages\\comtypes\\gen\\__init__.py'>
+2025-06-26 21:47:53,097 - comtypes.client._code_cache - INFO - Using writeable comtypes cache directory: 'C:\Users\Aalbc\AppData\Local\Programs\Python\Python312\Lib\site-packages\comtypes\gen'
+2025-06-26 21:47:53,266 - Pinky - INFO - Todos los sistemas configurados
+2025-06-26 21:48:02,275 - Pinky - INFO - COMMAND: busca en youtube perros | INTENT: unknown | STATUS: FAILED | TIME: 0.00s
+2025-06-26 21:48:09,543 - Pinky - INFO - COMMAND: abre youtube | INTENT: open_item | STATUS: SUCCESS | TIME: 0.25s

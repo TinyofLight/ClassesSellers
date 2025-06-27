@@ -1,0 +1,14 @@
+# Archivos generados por tModLoader que no deben subirse
+bin/
+obj/
+.tmodloader/
+*.tmod
+
+# Archivos del IDE
+.vs/
+.vscode/
+*.csproj.user
+*.sln.DotSettings.user
+
+# Archivos de log
+*.log

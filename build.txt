@@ -1,0 +1,3 @@
+displayName = Sellers of different classes
+author = Nyahaha
+version = 0.1

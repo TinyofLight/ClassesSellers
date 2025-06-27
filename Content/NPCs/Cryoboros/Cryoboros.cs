@@ -15,12 +15,15 @@ namespace ClassesSellers.Content.NPCs.Cryoboros
     public class Cryoboros : ModNPC
 
     {
-        #region Texturas      
+
+
+        #region datos nuevos para acomodar  
         private int currentPhase = 1;
         private int teleportLocationX = 0;
-        public static color BackglowColor => (24, 100, 255, 80) * 0.6f;
         public override string Texture => "ClassesSellers/Npcs/Cryoboros/CryoborosPhase1";
-        public static Asset<Texture2D> Phase2Texutre;
+        public static readonly SoundStyle HitSound = new("ClassesSellers/NPCs/Cryoboros/hit", 3);
+        public static readonly SoundStyle TransitionSound = new("ClassesSellers/NPCs/Cryoboros/CryoborosPhase");
+        public static readonly SoundStyle DeathSound = new("ClassesSellers/NPCs/Cryoboros/CryoborosDeath");
         
         #endregion
         #region Variables de IA y Sincronización
@@ -38,7 +41,7 @@ namespace ClassesSellers.Content.NPCs.Cryoboros
         private int maxAttacksInStance = 3; // Máximo de ataques antes de cambiar stance
         private float idleCircleAngle = 0f; // Ángulo para movimiento circular en idle
         private Vector2 idleOffset; // Offset para movimiento orgánico
-        
+
         // Referencias AI de Terraria
         private ref float AI_Timer => ref NPC.ai[0];
         private ref float AI_Phase => ref NPC.ai[1];
@@ -73,10 +76,12 @@ namespace ClassesSellers.Content.NPCs.Cryoboros
             NPC.boss = true;
             NPC.npcSlots = 10f;
             NPC.aiStyle = -1; // IA personalizada
-            
+            NPC.coldDamage = true;
+            NPC.HitSound = HitSound;
+            NPC.DeathSound = DeathSound;
             if (!Main.dedServ)
             {
-                Music = MusicID.Boss2; // Cambiar por música personalizada si tienes
+                Music = "ClassesSellers/NPCs/Cryoboros/BossMusic"; //cancion personalizada para el boss
             }
         }
 
@@ -85,23 +90,23 @@ namespace ClassesSellers.Content.NPCs.Cryoboros
             NPC.lifeMax = (int)(NPC.lifeMax * balance);
             NPC.damage = (int)(NPC.damage * bossAdjustment);
         }
-        
-          // =================================================================================
+
+        // =================================================================================
         // MÉTODO PARA CONDICIÓN DE APARICIÓN NATURAL (DESPUÉS DEL MURO DE CARNE)
         // =================================================================================
         public override float SpawnChance(NPCSpawnInfo spawnInfo)
-        
+
         {
             // Ejemplo: Aparece durante una Ventisca en el bioma de Nieve, en la superficie,
             // después de derrotar al Wall of Flesh, y solo si no hay otra instancia de este jefe activa.
             if (Main.hardMode && // NUEVA CONDICIÓN: Solo en Hardmode (después del Wall of Flesh)
-                spawnInfo.Player.ZoneSnow && 
+                spawnInfo.Player.ZoneSnow &&
                 Main.raining && // Ventisca (lluvia en bioma de nieve)
                 spawnInfo.Player.ZoneOverworldHeight)
             {
                 // Comprueba si ya existe una instancia de este jefe en el mundo.
                 // 'Type' es el identificador numérico del tipo de este NPC.
-                bool bossAlreadySpawned = NPC.AnyNPCs(Type); 
+                bool bossAlreadySpawned = NPC.AnyNPCs(Type);
 
                 if (!bossAlreadySpawned)
                 {
@@ -110,7 +115,7 @@ namespace ClassesSellers.Content.NPCs.Cryoboros
                     // Para un jefe, incluso si es un mini-jefe de evento, esta probabilidad debe ser
                     // cuidadosamente ajustada para que no sea ni muy raro ni muy común.
                     // Si este es un JEFE PRINCIPAL, es MUY RECOMENDABLE usar un ÍTEM INVOCADOR en lugar de SpawnChance.
-                    return 0.05f; 
+                    return 0.05f;
                 }
                 //else
                 //{
@@ -119,9 +124,9 @@ namespace ClassesSellers.Content.NPCs.Cryoboros
             }
             return 0f; // No aparece en otras condiciones.
         }
-       
-    
-        #endregion 
+
+
+        #endregion
 
         #region Sincronización Multijugador/ Spawn condition
         public override void SendExtraAI(BinaryWriter writer)
@@ -145,18 +150,17 @@ namespace ClassesSellers.Content.NPCs.Cryoboros
         }
 
         public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
-    {
-    bestiaryEntry.Info.AddRange(new IBestiaryInfoElement[] {
+        {
+            bestiaryEntry.Info.AddRange(new IBestiaryInfoElement[] {
         // Ruta corregida para la etiqueta del evento:
         BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Biomes.Snow, 
         // Si quieres indicar que es un jefe de Hardmode:
         //SpawnConditionBestiaryInfoElement("Mods.ClassesSellers.Bestiary.SpawnConditions.Hardmode"),
         // Si quieres indicar que aparece de noche:
         BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Times.NightTime,
-
         new FlavorTextBestiaryInfoElement("Un antiguo dragón que domina tanto el hielo como el fuego. Sus emociones cambian su elemento, volviéndolo impredecible en batalla. Solo aparece en Hardmode durante las ventiscas más feroces.")
     });
-       
+
         }
         #endregion
 
@@ -178,7 +182,7 @@ namespace ClassesSellers.Content.NPCs.Cryoboros
 
             // Verificar transición de fase
             CheckPhaseTransition();
-            
+
             // Actualizar estado de enfurecimiento
             UpdateEnrageStatus(target);
 
@@ -234,19 +238,19 @@ namespace ClassesSellers.Content.NPCs.Cryoboros
 
             // Movimiento orgánico - crear un patrón de figura-8 o círculos pequeños
             idleCircleAngle += 0.03f * (hasEnteredSecondPhase ? 1.5f : 1f);
-            
+
             // Crear movimiento en forma de 8 para sentirse más vivo
             float horizontalOffset = (float)Math.Sin(idleCircleAngle) * 80f;
             float verticalOffset = (float)Math.Sin(idleCircleAngle * 2f) * 40f;
-            
+
             // Posición base relativa al jugador
             Vector2 basePosition = target.Center + new Vector2(250f * NPC.direction, -200f);
             Vector2 targetPos = basePosition + new Vector2(horizontalOffset, verticalOffset);
-            
+
             // Movimiento suave hacia la posición objetivo
             Vector2 direction = targetPos - NPC.Center;
             float distance = direction.Length();
-            
+
             if (distance > 30f)
             {
                 direction.Normalize();
@@ -277,7 +281,7 @@ namespace ClassesSellers.Content.NPCs.Cryoboros
             {
                 // Elegir próximo ataque basado en la distancia al jugador y fase
                 float distanceToPlayer = Vector2.Distance(NPC.Center, target.Center);
-                
+
                 if (hasEnteredSecondPhase && Main.rand.NextBool(4)) // 25% chance en fase 2
                 {
                     attackPhase = 5; // Ataque de vórtices
@@ -309,7 +313,7 @@ namespace ClassesSellers.Content.NPCs.Cryoboros
                 Vector2 chargeDirection = (target.Center - NPC.Center);
                 chargeDirection.Normalize();
                 NPC.velocity = chargeDirection * 16f;
-                
+
                 // Sonido de carga
                 SoundEngine.PlaySound(SoundID.Item74, NPC.Center);
             }
@@ -366,10 +370,10 @@ namespace ClassesSellers.Content.NPCs.Cryoboros
             // Moverse en círculo alrededor del jugador
             float radius = 250f;
             float speed = 0.08f * (hasEnteredSecondPhase ? 1.5f : 1f);
-            
+
             Vector2 center = target.Center;
             float angle = (attackTimer * speed) + (float)(Main.rand.NextDouble() * MathHelper.TwoPi);
-            
+
             targetPosition = center + new Vector2(
                 (float)Math.Cos(angle) * radius,
                 (float)Math.Sin(angle) * radius - 100f
@@ -383,9 +387,9 @@ namespace ClassesSellers.Content.NPCs.Cryoboros
             {
                 Vector2 shootDirection = (target.Center - NPC.Center);
                 shootDirection.Normalize();
-                
-                int projectileType = currentStance == 0 ? ProjectileID.FrostBolt : ProjectileID.Fireball;
-                Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, shootDirection * 8f, 
+
+                int projectileType = currentStance == 0 ? ProjectileID.FrostBeam : ProjectileID.Fireball;
+                Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, shootDirection * 8f,
                     projectileType, NPC.damage / 4, 0f);
             }
 
@@ -411,7 +415,7 @@ namespace ClassesSellers.Content.NPCs.Cryoboros
             {
                 currentStance = 1 - currentStance; // Cambiar entre 0 y 1
                 attackCycleCounter = 0;
-                
+
                 // Sonido de transformación
                 SoundEngine.PlaySound(currentStance == 0 ? SoundID.Item28 : SoundID.Item74, NPC.Center);
             }
@@ -429,7 +433,7 @@ namespace ClassesSellers.Content.NPCs.Cryoboros
             // Moverse al centro de la arena
             Vector2 centerPosition = target.Center + new Vector2(0, -300f);
             Vector2 direction = centerPosition - NPC.Center;
-            
+
             if (direction.Length() > 50f)
             {
                 direction.Normalize();
@@ -445,12 +449,12 @@ namespace ClassesSellers.Content.NPCs.Cryoboros
             {
                 // Crear vórtice de hielo a la izquierda
                 Vector2 iceVortexPos = target.Center + new Vector2(-200f, 0);
-                Projectile.NewProjectile(NPC.GetSource_FromAI(), iceVortexPos, Vector2.Zero, 
-                    ProjectileID.FrostBolt, NPC.damage / 3, 0f); // Placeholder - usar proyectil personalizado
+                Projectile.NewProjectile(NPC.GetSource_FromAI(), iceVortexPos, Vector2.Zero,
+                    ProjectileID.FrostBeam, NPC.damage / 3, 0f); // Placeholder - usar proyectil personalizado
 
                 // Crear vórtice de fuego a la derecha  
                 Vector2 fireVortexPos = target.Center + new Vector2(200f, 0);
-                Projectile.NewProjectile(NPC.GetSource_FromAI(), fireVortexPos, Vector2.Zero, 
+                Projectile.NewProjectile(NPC.GetSource_FromAI(), fireVortexPos, Vector2.Zero,
                     ProjectileID.Fireball, NPC.damage / 3, 0f); // Placeholder - usar proyectil personalizado
 
                 SoundEngine.PlaySound(SoundID.Item62, NPC.Center); // Sonido épico
@@ -476,7 +480,7 @@ namespace ClassesSellers.Content.NPCs.Cryoboros
             {
                 Vector2 centerPos = target.Center + new Vector2(0, -250f);
                 Vector2 direction = centerPos - NPC.Center;
-                
+
                 if (direction.Length() > 30f)
                 {
                     direction.Normalize();
@@ -496,7 +500,7 @@ namespace ClassesSellers.Content.NPCs.Cryoboros
                 // Rugido épico
                 SoundEngine.PlaySound(SoundID.Roar, NPC.Center);
                 SoundEngine.PlaySound(SoundID.Item14, NPC.Center); // Sonido adicional dramático
-                
+
                 // Parar completamente
                 NPC.velocity = Vector2.Zero;
             }
@@ -508,7 +512,7 @@ namespace ClassesSellers.Content.NPCs.Cryoboros
                 {
                     CreateMajorTransitionExplosion();
                 }
-                
+
                 // Temblor de pantalla (si está disponible)
                 if (attackTimer % 10 == 0)
                 {
@@ -525,11 +529,11 @@ namespace ClassesSellers.Content.NPCs.Cryoboros
                     maxAttacksInStance = 2; // Cambios de stance más frecuentes
                     currentStance = 1 - currentStance; // Cambiar stance también
                 }
-                
+
                 // Restaurar vulnerabilidad
                 NPC.dontTakeDamage = false;
                 inMajorTransition = false;
-                
+
                 // Volver al estado idle
                 attackPhase = 0;
                 attackTimer = 0;
@@ -543,15 +547,15 @@ namespace ClassesSellers.Content.NPCs.Cryoboros
         {
             Vector2 direction = (target.Center - NPC.Center);
             direction.Normalize();
-            
+
             // Disparar 3 fragmentos de hielo en abanico
             for (int i = -1; i <= 1; i++)
             {
                 Vector2 shootVel = direction.RotatedBy(MathHelper.ToRadians(15 * i)) * 10f;
-                Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, shootVel, 
-                    ProjectileID.FrostBolt, NPC.damage / 3, 0f);
+                Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, shootVel,
+                    ProjectileID.FrostBeam, NPC.damage / 3, 0f);
             }
-            
+
             SoundEngine.PlaySound(SoundID.Item28, NPC.Center);
         }
 
@@ -560,10 +564,10 @@ namespace ClassesSellers.Content.NPCs.Cryoboros
             Vector2 direction = (target.Center - NPC.Center);
             direction.Normalize();
             direction *= 12f;
-            
-            Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, direction, 
+
+            Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, direction,
                 ProjectileID.Fireball, NPC.damage / 3, 0f);
-                
+
             SoundEngine.PlaySound(SoundID.Item34, NPC.Center);
         }
 
@@ -603,7 +607,7 @@ namespace ClassesSellers.Content.NPCs.Cryoboros
             // Crear explosión de partículas específica del elemento
             int dustType = element == 0 ? DustID.Ice : DustID.Torch;
             Color dustColor = element == 0 ? Color.Cyan : Color.OrangeRed;
-            
+
             for (int i = 0; i < 8; i++)
             {
                 Vector2 velocity = Main.rand.NextVector2Circular(8f, 8f);
@@ -619,13 +623,13 @@ namespace ClassesSellers.Content.NPCs.Cryoboros
             {
                 Vector2 dustPos = NPC.Center + Main.rand.NextVector2Circular(120f, 120f);
                 Vector2 dustVel = Main.rand.NextVector2Circular(12f, 12f);
-                
+
                 // Alternar entre hielo y fuego
                 int dustType = i % 2 == 0 ? DustID.Ice : DustID.Torch;
                 Dust explosionDust = Dust.NewDustDirect(dustPos, 0, 0, dustType, dustVel.X, dustVel.Y, Scale: 2.5f);
                 explosionDust.noGravity = true;
             }
-            
+
             // Crear algunos efectos de humo adicionales
             for (int i = 0; i < 5; i++)
             {
@@ -652,7 +656,7 @@ namespace ClassesSellers.Content.NPCs.Cryoboros
             // Enfurecerse si el jugador está muy lejos
             float distance = Vector2.Distance(NPC.Center, target.Center);
             isEnraged = distance > 1000f;
-            
+
             if (isEnraged)
             {
                 NPC.damage = (int)(NPC.defDamage * 1.5f);
@@ -671,7 +675,7 @@ namespace ClassesSellers.Content.NPCs.Cryoboros
         private void FinishAttack()
         {
             attackCycleCounter++;
-            
+
             // Cambiar stance después de varios ataques
             if (attackCycleCounter >= maxAttacksInStance)
             {
@@ -681,7 +685,7 @@ namespace ClassesSellers.Content.NPCs.Cryoboros
             {
                 attackPhase = 0; // Volver a idle
             }
-            
+
             attackTimer = 0;
             NPC.netUpdate = true;
         }
@@ -692,11 +696,11 @@ namespace ClassesSellers.Content.NPCs.Cryoboros
         {
             Texture2D texture = TextureAssets.Npc[Type].Value;
             Vector2 drawPos = NPC.Center - screenPos;
-            
+
             // Cambiar color según el stance
             if (currentStance == 0) // Hielo
             {
-                drawColor = Color.Lerp(drawColor, Color.CyanBlue, 0.4f);
+                drawColor = Color.Lerp(drawColor, Color.LightBlue , 0.4f);
             }
             else // Fuego
             {
@@ -709,12 +713,12 @@ namespace ClassesSellers.Content.NPCs.Cryoboros
                 // Crear efecto de pulso de brillo
                 float glowIntensity = 0.5f + (float)Math.Sin(attackTimer * 0.3f) * 0.3f;
                 Color glowColor = Color.Lerp(Color.Cyan, Color.OrangeRed, (float)Math.Sin(attackTimer * 0.1f) * 0.5f + 0.5f);
-                
+
                 // Dibujar sprite con brillo
                 for (int i = 0; i < 4; i++)
                 {
                     Vector2 glowOffset = new Vector2(2f, 0).RotatedBy(MathHelper.PiOver2 * i);
-                    spriteBatch.Draw(texture, drawPos + glowOffset, NPC.frame, glowColor * glowIntensity * 0.5f, 
+                    spriteBatch.Draw(texture, drawPos + glowOffset, NPC.frame, glowColor * glowIntensity * 0.5f,
                         NPC.rotation, NPC.frame.Size() / 2f, NPC.scale, SpriteEffects.None, 0f);
                 }
             }
@@ -726,14 +730,14 @@ namespace ClassesSellers.Content.NPCs.Cryoboros
                 {
                     Vector2 trailDrawPos = NPC.oldPos[i] - screenPos + NPC.Size / 2f;
                     Color trailColor = drawColor * ((NPC.oldPos.Length - i) / (float)NPC.oldPos.Length) * 0.5f;
-                    spriteBatch.Draw(texture, trailDrawPos, NPC.frame, trailColor, NPC.oldRot[i], 
+                    spriteBatch.Draw(texture, trailDrawPos, NPC.frame, trailColor, NPC.oldRot[i],
                         NPC.frame.Size() / 2f, NPC.scale, SpriteEffects.None, 0f);
                 }
             }
 
             // Dibujar sprite principal
             SpriteEffects effects = NPC.direction == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
-            spriteBatch.Draw(texture, drawPos, NPC.frame, drawColor, NPC.rotation, 
+            spriteBatch.Draw(texture, drawPos, NPC.frame, drawColor, NPC.rotation,
                 NPC.frame.Size() / 2f, NPC.scale, effects, 0f);
 
             // TODO: Agregar Glowmask aquí cuando tengas la textura
@@ -778,7 +782,7 @@ namespace ClassesSellers.Content.NPCs.Cryoboros
         {
             // Agregar drops personalizados aquí
             // npcLoot.Add(ItemDropRule.Common(ModContent.ItemType<CryoborosScale>(), 1, 15, 25));
-             npcLoot.Add(ItemDropRule.Common(ItemID.SoulofFright, 1, 5, 10));
+            npcLoot.Add(ItemDropRule.Common(ItemID.SoulofFright, 1, 5, 10));
         }
 
         public override void OnKill()
@@ -790,7 +794,7 @@ namespace ClassesSellers.Content.NPCs.Cryoboros
                 Dust.NewDust(NPC.Center, 0, 0, DustID.Ice, dustVel.X, dustVel.Y, Scale: 2f);
                 Dust.NewDust(NPC.Center, 0, 0, DustID.Torch, dustVel.X, dustVel.Y, Scale: 2f);
             }
-            
+
             SoundEngine.PlaySound(SoundID.NPCDeath14, NPC.Center);
         }
 

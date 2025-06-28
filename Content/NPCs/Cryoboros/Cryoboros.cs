@@ -18,14 +18,13 @@ namespace ClassesSellers.Content.NPCs.Cryoboros
     {
 
 
-      
+
         private int currentPhase = 1;
         private int teleportLocationX = 0;
-       // public override string Texture => "ClassesSellers/NPCs/Cryoboros/CryoborosPhase1";
-        public static readonly SoundStyle HitSound = new("ClassesSellers/NPCs/Cryoboros/hit", 2);
-        public static readonly SoundStyle TransitionSound = new("ClassesSellers/NPCs/Cryoboros/Cryoboros_Phase");
-        public static readonly SoundStyle DeathSound = new("ClassesSellers/NPCs/Cryoboros/Cryoboros_Death.ogg");
-        
+        public static readonly SoundStyle HitSound = new("ClassesSellers/Sounds/NPCs/Cryoboros/hit_", 2);
+        public static readonly SoundStyle TransitionSound = new("ClassesSellers/Sounds/Cryoboros/Cryoboros_Phase");
+        public static readonly SoundStyle DeathSound = new("ClassesSellers/Sounds/NPCs/Cryoboros/Cryoboros_Death");
+
         #region Variables de IA y Sincronización
         private int attackPhase = 0; // Estado actual del ataque
         private int attackTimer = 0; // Timer para ataques
@@ -61,28 +60,38 @@ namespace ClassesSellers.Content.NPCs.Cryoboros
 
         public override void SetDefaults()
         {
+            // 1. ESTILO Y TIPO DE IA
+            NPC.aiStyle = -1; // IA personalizada
+
+            // 2. DIMENSIONES Y ESTADÍSTICAS BÁSICAS
             NPC.width = 120;
             NPC.height = 80;
             NPC.damage = 85;
             NPC.defense = 25;
             NPC.lifeMax = 28000;
-            NPC.HitSound = SoundID.NPCHit1;
-            NPC.DeathSound = SoundID.NPCDeath14;
-            NPC.knockBackResist = 0f;
-            NPC.noGravity = true;
-            NPC.noTileCollide = true;
             NPC.value = Item.buyPrice(gold: 15);
-            NPC.SpawnWithHigherTime(30);
-            NPC.boss = true;
+            NPC.knockBackResist = 0f;
             NPC.npcSlots = 10f;
-            NPC.aiStyle = -1; // IA personalizada
-            NPC.coldDamage = true;
-            NPC.HitSound = HitSound;
-            NPC.DeathSound = DeathSound;
+
+            // 3. PROPIEDADES DE JEFE Y MÚSICA (¡CRUCIAL!)
+            // Establecer que es un jefe y su música ANTES de otros detalles.
+            NPC.boss = true;
             if (!Main.dedServ)
             {
-                Music = MusicLoader.GetMusicSlot(Mod, "ClassesSellers/NPCs/Cryoboros/BossMusic"); //cancion personalizada para el boss
+                // Asigna la música aquí, justo después de marcarlo como jefe.
+                Music = MusicLoader.GetMusicSlot(Mod, "ClassesSellers/Music/BossMusic/Cryoboros");
             }
+
+            // 4. SONIDOS PERSONALIZADOS
+            // Ahora que es un jefe con música, asigna sus sonidos específicos.
+            NPC.HitSound = HitSound;
+            NPC.DeathSound = DeathSound;
+
+            // 5. COMPORTAMIENTOS Y FÍSICA
+            NPC.noGravity = true;
+            NPC.noTileCollide = true;
+            NPC.coldDamage = true; // Tipo de daño
+            NPC.SpawnWithHigherTime(30); // Esto generalmente no es necesario para jefes invocados, pero no hace daño.
         }
 
         public override void ApplyDifficultyAndPlayerScaling(int numPlayers, float balance, float bossAdjustment)
@@ -271,7 +280,7 @@ namespace ClassesSellers.Content.NPCs.Cryoboros
                 }
             }
 
-            // Efectos de partículas ambientales
+            // Efectos de partículas ambientales error aparece assetrepository en lina 276
             if (attackTimer % 30 == 0)
             {
                 CreateAmbientParticles();
@@ -700,7 +709,7 @@ namespace ClassesSellers.Content.NPCs.Cryoboros
             // Cambiar color según el stance
             if (currentStance == 0) // Hielo
             {
-                drawColor = Color.Lerp(drawColor, Color.LightBlue , 0.4f);
+                drawColor = Color.Lerp(drawColor, Color.LightBlue, 0.4f);
             }
             else // Fuego
             {

@@ -1,3 +1,17 @@
+
+# Incluir todos los archivos de imagen .png
+asset = Content/**/*.png
+
+# Incluir todos los archivos de sonido .ogg
+asset = Content/**/*.ogg
+
+# Incluir todos los archivos de sonido .wav
+asset = Content/**/*.wav
+
+# Incluir todos los archivos de música
+# (Si los tienes en una carpeta separada, puedes ser más específico)
+ music = Music/*.ogg
+
 displayName = Sellers of different classes
 author = Nyahaha
 version = 0.1

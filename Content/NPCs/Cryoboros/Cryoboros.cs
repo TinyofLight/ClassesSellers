@@ -4,6 +4,7 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.Audio;
+using Terraria.GameContent;
 using Terraria.GameContent.ItemDropRules;
 using Terraria.GameContent.Bestiary;
 using Microsoft.Xna.Framework;
@@ -17,15 +18,14 @@ namespace ClassesSellers.Content.NPCs.Cryoboros
     {
 
 
-        #region datos nuevos para acomodar  
+      
         private int currentPhase = 1;
         private int teleportLocationX = 0;
-        public override string Texture => "ClassesSellers/Npcs/Cryoboros/CryoborosPhase1";
-        public static readonly SoundStyle HitSound = new("ClassesSellers/NPCs/Cryoboros/hit", 3);
-        public static readonly SoundStyle TransitionSound = new("ClassesSellers/NPCs/Cryoboros/CryoborosPhase");
-        public static readonly SoundStyle DeathSound = new("ClassesSellers/NPCs/Cryoboros/CryoborosDeath");
+       // public override string Texture => "ClassesSellers/NPCs/Cryoboros/CryoborosPhase1";
+        public static readonly SoundStyle HitSound = new("ClassesSellers/NPCs/Cryoboros/hit", 2);
+        public static readonly SoundStyle TransitionSound = new("ClassesSellers/NPCs/Cryoboros/Cryoboros_Phase");
+        public static readonly SoundStyle DeathSound = new("ClassesSellers/NPCs/Cryoboros/Cryoboros_Death.ogg");
         
-        #endregion
         #region Variables de IA y Sincronización
         private int attackPhase = 0; // Estado actual del ataque
         private int attackTimer = 0; // Timer para ataques
@@ -81,7 +81,7 @@ namespace ClassesSellers.Content.NPCs.Cryoboros
             NPC.DeathSound = DeathSound;
             if (!Main.dedServ)
             {
-                Music = "ClassesSellers/NPCs/Cryoboros/BossMusic"; //cancion personalizada para el boss
+                Music = MusicLoader.GetMusicSlot(Mod, "ClassesSellers/NPCs/Cryoboros/BossMusic"); //cancion personalizada para el boss
             }
         }
 

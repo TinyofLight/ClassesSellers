@@ -21,6 +21,8 @@ NPCs: {
 
 		DisplayName: Classes Sellers
 	}
+
+	Cryoboros.DisplayName: Cryoboros
 }
 
 Items: {

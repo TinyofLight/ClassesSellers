@@ -10,7 +10,8 @@
 
 	<!-- References -->
 	<ItemGroup>
-		
+	
+		<tModLoaderMusic Include="Music\BossMusic.ogg" />
 	</ItemGroup>
 
 </Project>

@@ -31,3 +31,10 @@ Items: {
 		Tooltip: ""
 	}
 }
+
+Buffs: {
+	FuriaCataclismicaBuff: {
+		Description: El poder del dragón fluye por tu ser
+		DisplayName: Furia Cataclísmica
+	}
+}

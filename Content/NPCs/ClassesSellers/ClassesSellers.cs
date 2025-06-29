@@ -12,7 +12,7 @@ using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.Utilities;
 
-namespace ClassesSellers.Content.NPCs
+namespace ClassesSellers.Content.NPCs.ClassesSellers
 {
     [AutoloadHead]
     public class ClassesSellers : ModNPC

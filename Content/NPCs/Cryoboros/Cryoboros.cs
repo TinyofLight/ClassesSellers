@@ -6,6 +6,7 @@ using Terraria.ModLoader;
 using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.GameContent.ItemDropRules;
+using ClassesSellers.Items.Consumables.FrutaDelCataclismo;
 using Terraria.GameContent.Bestiary;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -16,13 +17,10 @@ namespace ClassesSellers.Content.NPCs.Cryoboros
     public class Cryoboros : ModNPC
 
     {
-
-
-
         private int currentPhase = 1;
         private int teleportLocationX = 0;
         public static readonly SoundStyle HitSound = new("ClassesSellers/Sounds/NPCs/Cryoboros/hit_", 2);
-        public static readonly SoundStyle TransitionSound = new("ClassesSellers/Sounds/Cryoboros/Cryoboros_Phase");
+        public static readonly SoundStyle TransitionSound = new("ClassesSellers/Sounds/NPCs/Cryoboros/Cryoboros_Phase");
         public static readonly SoundStyle DeathSound = new("ClassesSellers/Sounds/NPCs/Cryoboros/Cryoboros_Death");
 
         #region Variables de IA y Sincronización
@@ -56,42 +54,39 @@ namespace ClassesSellers.Content.NPCs.Cryoboros
             NPCID.Sets.TrailingMode[NPC.type] = 1;
             NPCID.Sets.BossBestiaryPriority.Add(Type);
             NPCID.Sets.MPAllowedEnemies[Type] = true;
+            
+
+
         }
 
         public override void SetDefaults()
         {
-            // 1. ESTILO Y TIPO DE IA
-            NPC.aiStyle = -1; // IA personalizada
-
-            // 2. DIMENSIONES Y ESTADÍSTICAS BÁSICAS
+            // --- ESTADÍSTICAS BÁSICAS ---
             NPC.width = 120;
             NPC.height = 80;
             NPC.damage = 85;
             NPC.defense = 25;
             NPC.lifeMax = 28000;
             NPC.value = Item.buyPrice(gold: 15);
-            NPC.knockBackResist = 0f;
-            NPC.npcSlots = 10f;
 
-            // 3. PROPIEDADES DE JEFE Y MÚSICA (¡CRUCIAL!)
-            // Establecer que es un jefe y su música ANTES de otros detalles.
+            // --- PROPIEDADES DE JEFE ---
             NPC.boss = true;
-            if (!Main.dedServ)
-            {
-                // Asigna la música aquí, justo después de marcarlo como jefe.
-                Music = MusicLoader.GetMusicSlot(Mod, "ClassesSellers/Music/BossMusic/Cryoboros");
-            }
+            NPC.npcSlots = 10f;
+            NPC.knockBackResist = 0f;
 
-            // 4. SONIDOS PERSONALIZADOS
-            // Ahora que es un jefe con música, asigna sus sonidos específicos.
+            // --- MÚSICA DE JEFE (EL LUGAR CORRECTO Y DEFINITIVO) ---
+            Music = MusicLoader.GetMusicSlot(Mod, "Music/BossMusic");
+
+            // --- SONIDOS ---
             NPC.HitSound = HitSound;
             NPC.DeathSound = DeathSound;
 
-            // 5. COMPORTAMIENTOS Y FÍSICA
+            // --- COMPORTAMIENTO Y FÍSICA ---
+            NPC.aiStyle = -1; // IA personalizada
             NPC.noGravity = true;
             NPC.noTileCollide = true;
-            NPC.coldDamage = true; // Tipo de daño
-            NPC.SpawnWithHigherTime(30); // Esto generalmente no es necesario para jefes invocados, pero no hace daño.
+            NPC.coldDamage = true;
+            NPC.SpawnWithHigherTime(30);
         }
 
         public override void ApplyDifficultyAndPlayerScaling(int numPlayers, float balance, float bossAdjustment)
@@ -100,9 +95,6 @@ namespace ClassesSellers.Content.NPCs.Cryoboros
             NPC.damage = (int)(NPC.damage * bossAdjustment);
         }
 
-        // =================================================================================
-        // MÉTODO PARA CONDICIÓN DE APARICIÓN NATURAL (DESPUÉS DEL MURO DE CARNE)
-        // =================================================================================
         public override float SpawnChance(NPCSpawnInfo spawnInfo)
 
         {
@@ -174,8 +166,11 @@ namespace ClassesSellers.Content.NPCs.Cryoboros
         #endregion
 
         #region IA Principal
+
         public override void AI()
         {
+
+
             // Encontrar jugador objetivo
             Player target = Main.player[NPC.target];
             if (!target.active || target.dead)
@@ -280,7 +275,7 @@ namespace ClassesSellers.Content.NPCs.Cryoboros
                 }
             }
 
-            // Efectos de partículas ambientales error aparece assetrepository en lina 276
+            // Efectos de partículas ambientales 
             if (attackTimer % 30 == 0)
             {
                 CreateAmbientParticles();
@@ -508,6 +503,7 @@ namespace ClassesSellers.Content.NPCs.Cryoboros
             {
                 // Rugido épico
                 SoundEngine.PlaySound(SoundID.Roar, NPC.Center);
+                SoundEngine.PlaySound(TransitionSound, NPC.Center); // <<-- AÑADE ESTA LÍNEA
                 SoundEngine.PlaySound(SoundID.Item14, NPC.Center); // Sonido adicional dramático
 
                 // Parar completamente
@@ -791,6 +787,7 @@ namespace ClassesSellers.Content.NPCs.Cryoboros
         {
             // Agregar drops personalizados aquí
             // npcLoot.Add(ItemDropRule.Common(ModContent.ItemType<CryoborosScale>(), 1, 15, 25));
+            npcLoot.Add(ItemDropRule.Common(ModContent.ItemType<FrutaDelCataclismo>(), 1, 1, 1));
             npcLoot.Add(ItemDropRule.Common(ItemID.SoulofFright, 1, 5, 10));
         }
 

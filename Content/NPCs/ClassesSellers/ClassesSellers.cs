@@ -84,13 +84,13 @@ namespace ClassesSellers.Content.NPCs.ClassesSellers
 
 public override void SetStaticDefaults()
 {
-    Main.npcFrameCount[NPC.type] = 23;
-    NPCID.Sets.ExtraFramesCount[NPC.type] = 28;
+    Main.npcFrameCount[NPC.type] = 27;
+    NPCID.Sets.ExtraFramesCount[NPC.type] = 9;
     NPCID.Sets.AttackFrameCount[NPC.type] = 4;
-    NPCID.Sets.DangerDetectRange[NPC.type] = 250;
+    NPCID.Sets.DangerDetectRange[NPC.type] = 700;
     NPCID.Sets.AttackType[NPC.type] = 1;
-    NPCID.Sets.AttackTime[NPC.type] = 17;
-    NPCID.Sets.AttackAverageChance[NPC.type] = 55;
+    NPCID.Sets.AttackTime[NPC.type] = 30;
+    NPCID.Sets.AttackAverageChance[NPC.type] = 5;
     NPCID.Sets.ShimmerTownTransform[NPC.type] = true;
 
     NPCID.Sets.NPCBestiaryDrawModifiers drawModifiers = new() { Velocity = 0.5f };

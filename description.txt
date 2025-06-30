@@ -1,1 +1,11 @@
-Modify this file with a description of your mod.
+[c/FFD700:¡Bienvenido a Classes Sellers, nuestro primer viaje en el modding de Terraria!]
+
+Este mod es el primer mod ¡Gracias por probarlo!
+
+[c/32CD32:CONTENIDO ACTUAL:]
+
+[c/E67E22:Mabel, la Vendedora de Clases:]
+Una nueva NPC de pueblo para ayudarte a especializarte en tu clase favorita //vanilla.
+
+[c/4682B4:Cryoboros, el Dragón de Hielo y Fuego:]
+Un desafiante jefe de que aparece en las ventiscas de la tundra. ¡Derrotalo para obtener recompensas legendarias! //Aun en desarrollo

@@ -1,1 +1,47 @@
-This description will show up on the steam page, check out https://steamcommunity.com/comment/Guide/formattinghelp.
+# Descripción del Mod Cryoboros - Terraria
+
+```
+[h1]🐉 CRYOBOROS - El Dragón de Doble Aliento[/h1]
+
+En las profundidades de las tundras heladas, cuando la ventisca ruge, despierta [b]Cryoboros[/b]. Este antiguo dragón de doble aliento no es un enemigo común. Su furia elemental pondrá a prueba a los guerreros más valientes del Hardmode. ¡Solo los más preparados sobrevivirán para contar la historia y reclamar sus legendarias recompensas!
+
+[hr][/hr]
+
+[h2]📍 Ubicación y Aparición[/h2]
+[b]Aparece en las tormentas de nieve[/b] - ¡Mantente alerta cuando el clima se vuelva hostil!
+
+[spoiler]Cuidado: Aún se están haciendo mejoras al jefe[/spoiler]
+
+[hr][/hr]
+
+[h2]🍎 Recompensas Especiales[/h2]
+
+[h3]Fruta Legendaria[/h3]
+[b]Duración:[/b] 5 minutos
+
+[b]Efectos de la fruta:[/b]
+[list]
+[*][b]+20% de Daño[/b]
+[*][b]+15% Velocidad de ataque[/b]
+[*][b]+10% Crítico[/b]
+[*][b]+12 Defensa[/b]
+[*][b]+15% Velocidad de movimiento[/b]
+[/list]
+
+[h3]🔥❄️ Efectos Elementales[/h3]
+Además de los buffs principales, tendrás acceso a dos poderosos efectos elementales:
+[list]
+[*][i]Efecto Helado[/i] - Congela a tus enemigos
+[*][i]Explosión de Fuego[/i] - Causa daño en área
+[/list]
+
+[hr][/hr]
+
+[h2]💝 Mensaje del Desarrollador[/h2]
+[quote=Desarrollador]Este es un proyecto hecho con mucha pasión y esfuerzo de aprendizaje. ¡Esperamos que lo disfrutes tanto como nosotros disfrutamos creándolo![/quote]
+
+[hr][/hr]
+
+[h3]⚠️ Nota Importante[/h3]
+[i]Este mod está en desarrollo activo. Se están realizando mejoras continuas para optimizar la experiencia de juego.[/i]
+```

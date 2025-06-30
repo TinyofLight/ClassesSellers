@@ -1,0 +1,22 @@
+=== Créditos de Assets para el Mod Classes Sellers ===
+
+Agradecimientos especiales a los siguientes creadores y plataformas por sus recursos:
+
+MÚSICA:
+- "Strip" por Tunetank, obtenido de Pixabay.com.
+- Link: https://pixabay.com/music/search/genre/video%20games/
+
+SONIDOS:
+- "Sonido de Golpe y Muerte " por Ogrebane, obtenido de https://opengameart.org/content/monster-sound-effects-2
+
+IMÁGENES:
+
+Fruta del Cataclismo
+KKnoblePersona
+https://opengameart.org/content/weird-fruits-16x16
+
+
+El sprite del jefe Cryoboros es una versión modificada del "Red Dragon" creado por [b]ZaPaper & Jordan Irwin (AntumDeluge)[/b]. Usado bajo la licencia CC BY 3.0.
+- Arte original: opengameart.org/node/83655
+- Créditos a: buko-studios.com
+- Comisionado por: playcraftapp.com

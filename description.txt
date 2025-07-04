@@ -1,5 +1,8 @@
-[c/FFD700:¡Bienvenido a Classes Sellers, nuestro primer viaje en el modding de Terraria!]
+# Classes Sellers Mod Update - Steam Workshop
 
+## 🇪🇸 ESPAÑOL
+```
+[c/FFD700:¡Bienvenido a Classes Sellers, nuestro primer viaje en el modding de Terraria!]
 Este mod es el primer mod ¡Gracias por probarlo!
 
 [c/32CD32:CONTENIDO ACTUAL:]
@@ -8,4 +11,135 @@ Este mod es el primer mod ¡Gracias por probarlo!
 Una nueva NPC de pueblo para ayudarte a especializarte en tu clase favorita //vanilla.
 
 [c/4682B4:Cryoboros, el Dragón de Hielo y Fuego:]
-Un desafiante jefe de que aparece en las ventiscas de la tundra. ¡Derrotalo para obtener recompensas legendarias! //Aun en desarrollo
+Un desafiante jefe que aparece en las ventiscas de la tundra. ¡Derrotalo para obtener recompensas legendarias! //Aun en desarrollo
+
+[h1]🐉 CRYOBOROS - El Dragón de Doble Aliento[/h1]
+En las profundidades de las tundras heladas, cuando la ventisca ruge, despierta [b]Cryoboros[/b]. Este antiguo dragón de doble aliento no es un enemigo común. Su furia elemental pondrá a prueba a los guerreros más valientes del Hardmode. ¡Solo los más preparados sobrevivirán para contar la historia y reclamar sus legendarias recompensas!
+
+[hr][/hr]
+[h2]📍 Ubicación y Aparición[/h2]
+[b]Aparece en las tormentas de nieve[/b] - ¡Mantente alerta cuando el clima se vuelva hostil!
+[spoiler]Cuidado: Aún se están haciendo mejoras al jefe[/spoiler]
+
+[hr][/hr]
+[h2]🔨 Receta de Invocación[/h2]
+[b]Se craftea en un Yunque:[/b]
+[list]
+[*]10 Obsidiana
+[*]10 Hielo
+[*]1 Rubí
+[*]1 Zafiro
+[*]3 Estrellas Caídas
+[/list]
+
+[hr][/hr]
+[h2]🍎 Recompensas Especiales[/h2]
+[h3]Fruta Legendaria[/h3]
+[b]Duración:[/b] 5 minutos
+[b]Efectos de la fruta:[/b]
+[list]
+[*][b]+20% de Daño[/b]
+[*][b]+15% Velocidad de ataque[/b]
+[*][b]+10% Crítico[/b]
+[*][b]+12 Defensa[/b]
+[*][b]+15% Velocidad de movimiento[/b]
+[/list]
+
+[h3]🔥❄️ Efectos Elementales[/h3]
+Además de los buffs principales, tendrás acceso a dos poderosos efectos elementales:
+[list]
+[*][i]Efecto Helado[/i] - Congela a tus enemigos
+[*][i]Explosión de Fuego[/i] - Causa daño en área
+[/list]
+
+[hr][/hr]
+[h2]🆕 Actualizaciones Recientes[/h2]
+[list]
+[*][b]¡Traducción al inglés próximamente![/b]
+[*]Se han arreglado efectos donde se movía a lo loco el dragón
+[*]Se agregó un par de tornados que atacan al jugador
+[*]Se agregó un invocador de jefe
+[*]Se incrementó su dropeo de fruta del cataclismo
+[/list]
+
+[hr][/hr]
+[h2]💝 Mensaje del Desarrollador[/h2]
+[quote=Desarrollador]Este es un proyecto hecho con mucha pasión y esfuerzo de aprendizaje. ¡Esperamos que lo disfrutes tanto como nosotros disfrutamos creándolo![/quote]
+
+[hr][/hr]
+[h3]⚠️ Nota Importante[/h3]
+[i]Este mod está en desarrollo activo. Se están realizando mejoras continuas para optimizar la experiencia de juego.[/i]
+```
+
+---
+
+## 🇺🇸 ENGLISH
+```
+[c/FFD700:Welcome to Classes Sellers, our first journey into Terraria modding!]
+This mod is the first mod. Thank you for trying it!
+
+[c/32CD32:CURRENT CONTENT:]
+
+[c/E67E22:Mabel, the Class Seller:]
+A new town NPC to help you specialize in your favorite class //vanilla.
+
+[c/4682B4:Cryoboros, the Ice and Fire Dragon:]
+A challenging boss that appears in tundra blizzards. Defeat it to obtain legendary rewards! //Still in development
+
+[h1]🐉 CRYOBOROS - The Dual-Breath Dragon[/h1]
+In the depths of the frozen tundras, when the blizzard roars, [b]Cryoboros[/b] awakens. This ancient dual-breath dragon is no ordinary enemy. Its elemental fury will test the bravest warriors of Hardmode. Only the most prepared will survive to tell the tale and claim its legendary rewards!
+
+[hr][/hr]
+[h2]📍 Location and Spawn[/h2]
+[b]Appears during snowstorms[/b] - Stay alert when the weather turns hostile!
+[spoiler]Warning: The boss is still being improved[/spoiler]
+
+[hr][/hr]
+[h2]🔨 Summoning Recipe[/h2]
+[b]Craft at an Anvil:[/b]
+[list]
+[*]10 Obsidian
+[*]10 Ice Blocks
+[*]1 Ruby
+[*]1 Sapphire
+[*]3 Fallen Stars
+[/list]
+
+[hr][/hr]
+[h2]🍎 Special Rewards[/h2]
+[h3]Legendary Fruit[/h3]
+[b]Duration:[/b] 5 minutes
+[b]Fruit Effects:[/b]
+[list]
+[*][b]+20% Damage[/b]
+[*][b]+15% Attack Speed[/b]
+[*][b]+10% Critical Strike Chance[/b]
+[*][b]+12 Defense[/b]
+[*][b]+15% Movement Speed[/b]
+[/list]
+
+[h3]🔥❄️ Elemental Effects[/h3]
+In addition to the main buffs, you'll have access to two powerful elemental effects:
+[list]
+[*][i]Freeze Effect[/i] - Freezes your enemies
+[*][i]Fire Explosion[/i] - Causes area damage
+[/list]
+
+[hr][/hr]
+[h2]🆕 Recent Updates[/h2]
+[list]
+[*][b]English translation coming soon![/b]
+[*]Fixed dragon movement effects that were causing erratic behavior
+[*]Added tornadoes that attack the player
+[*]Added boss summoning item
+[*]Increased Cataclysm Fruit drop rate
+[/list]
+
+[hr][/hr]
+[h2]💝 Developer Message[/h2]
+[quote=Developer]This is a project made with great passion and learning effort. We hope you enjoy it as much as we enjoyed creating it![/quote]
+
+[hr][/hr]
+[h3]⚠️ Important Note[/h3]
+[i]This mod is in active development. Continuous improvements are being made to optimize the gaming experience.[/i]
+```

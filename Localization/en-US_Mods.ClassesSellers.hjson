@@ -30,6 +30,16 @@ Items: {
 		DisplayName: Small House Plan
 		Tooltip: ""
 	}
+
+	CristalDraconico: {
+		Tooltip:
+			'''
+			Invoca al Dragón Elemental
+			Solo puede usarse durante la noche
+			'Las energías de fuego y hielo se arremolinan...'
+			'''
+		DisplayName: Cristal Draconico
+	}
 }
 
 Buffs: {

@@ -54,7 +54,7 @@ namespace ClassesSellers.Content.NPCs.Cryoboros
             NPCID.Sets.TrailingMode[NPC.type] = 1;
             NPCID.Sets.BossBestiaryPriority.Add(Type);
             NPCID.Sets.MPAllowedEnemies[Type] = true;
-            
+
 
 
         }
@@ -269,7 +269,7 @@ namespace ClassesSellers.Content.NPCs.Cryoboros
             if (attackTimer % 120 == 0)
             {
                 // Cambio ocasional de lado
-                if (Main.rand.NextBool(3))
+                if (Vector2.Distance(NPC.Center, target.Center) > 500f && Main.rand.NextBool(4))
                 {
                     NPC.direction *= -1;
                 }
@@ -347,7 +347,7 @@ namespace ClassesSellers.Content.NPCs.Cryoboros
             Vector2 targetPos = target.Center + new Vector2(300f * (NPC.Center.X < target.Center.X ? -1 : 1), -150);
             Vector2 direction = targetPos - NPC.Center;
             direction.Normalize();
-            NPC.velocity = (NPC.velocity * 8f + direction * 6f) / 9f;
+            NPC.velocity = Vector2.Lerp(NPC.velocity, direction * 6f, 0.1f);
 
             // Disparar proyectiles
             if (attackTimer % 20 == 0 && projectileCount < 5)
@@ -376,7 +376,7 @@ namespace ClassesSellers.Content.NPCs.Cryoboros
             float speed = 0.08f * (hasEnteredSecondPhase ? 1.5f : 1f);
 
             Vector2 center = target.Center;
-            float angle = (attackTimer * speed) + (float)(Main.rand.NextDouble() * MathHelper.TwoPi);
+            float angle = (attackTimer * speed);
 
             targetPosition = center + new Vector2(
                 (float)Math.Cos(angle) * radius,
@@ -432,48 +432,206 @@ namespace ClassesSellers.Content.NPCs.Cryoboros
             }
         }
 
-        private void AI_State_VortexAttack(Player target)
+ private void AI_State_VortexAttack(Player target)
+{
+    // Moverse al centro de la arena
+    Vector2 centerPosition = target.Center + new Vector2(0, -300f);
+    Vector2 direction = centerPosition - NPC.Center;
+
+    if (direction.Length() > 50f)
+    {
+        direction.Normalize();
+        NPC.velocity = direction * 4f;
+    }
+    else
+    {
+        NPC.velocity *= 0.9f;
+    }
+
+    // Crear tornados duales que siguen al jugador
+    if (attackTimer == 60)
+    {
+        // Tornado de hielo a la izquierda
+        Vector2 iceVortexPos = target.Center + new Vector2(-300f, 0);
+        int iceTornado = Projectile.NewProjectile(NPC.GetSource_FromAI(), iceVortexPos, 
+            Vector2.Zero, ProjectileID.SandnadoFriendly, NPC.damage / 3, 0f);
+        
+        // Hacer que el tornado de hielo siga al jugador lentamente
+        if (iceTornado < Main.maxProjectiles)
         {
-            // Moverse al centro de la arena
-            Vector2 centerPosition = target.Center + new Vector2(0, -300f);
-            Vector2 direction = centerPosition - NPC.Center;
+            Main.projectile[iceTornado].timeLeft = 180; // Duración del tornado
+            Main.projectile[iceTornado].tileCollide = false;
+        }
 
-            if (direction.Length() > 50f)
+        // Tornado de fuego a la derecha  
+        Vector2 fireVortexPos = target.Center + new Vector2(300f, 0);
+        int fireTornado = Projectile.NewProjectile(NPC.GetSource_FromAI(), fireVortexPos, 
+            Vector2.Zero, ProjectileID.SandnadoHostile, NPC.damage / 3, 0f);
+        
+        // Hacer que el tornado de fuego siga al jugador lentamente
+        if (fireTornado < Main.maxProjectiles)
+        {
+            Main.projectile[fireTornado].timeLeft = 180; // Duración del tornado
+            Main.projectile[fireTornado].tileCollide = false;
+        }
+
+        SoundEngine.PlaySound(SoundID.Item62, NPC.Center);
+    }
+
+    // Mover los tornados hacia el jugador (pero más lento al final)
+    if (attackTimer > 60 && attackTimer < 240)
+    {
+        // Buscar y mover los tornados existentes
+        for (int i = 0; i < Main.maxProjectiles; i++)
+        {
+            Projectile proj = Main.projectile[i];
+            if (proj.active && (proj.type == ProjectileID.SandnadoFriendly || proj.type == ProjectileID.SandnadoHostile))
             {
-                direction.Normalize();
-                NPC.velocity = direction * 4f;
+                // Hacer que los tornados se muevan lentamente hacia el jugador
+                Vector2 tornadoDirection = (target.Center - proj.Center).SafeNormalize(Vector2.Zero);
+                
+                // Ralentizar los tornados en los últimos 40 frames
+                float speedMultiplier = attackTimer > 200 ? 0.5f : 1f;
+                proj.velocity = Vector2.Lerp(proj.velocity, tornadoDirection * 2f * speedMultiplier, 0.05f);
+                
+                // Limitar la velocidad máxima
+                float maxSpeed = attackTimer > 200 ? 1.5f : 3f;
+                if (proj.velocity.Length() > maxSpeed)
+                {
+                    proj.velocity = proj.velocity.SafeNormalize(Vector2.Zero) * maxSpeed;
+                }
             }
-            else
+        }
+    }
+
+    // Efectos visuales + proyectiles desde los tornados
+    // Parar de disparar 40 frames antes del final (2/3 de segundo)
+    if (attackTimer > 60 && attackTimer < 200 && attackTimer % 20 == 0) // Cada 20 frames
+    {
+        // Buscar posiciones actuales de los tornados
+        Vector2 iceVortexPos = target.Center + new Vector2(-200f, 0);
+        Vector2 fireVortexPos = target.Center + new Vector2(200f, 0);
+        
+        // Actualizar posiciones basándose en tornados reales si existen
+        for (int i = 0; i < Main.maxProjectiles; i++)
+        {
+            Projectile proj = Main.projectile[i];
+            if (proj.active)
             {
-                NPC.velocity *= 0.9f;
+                if (proj.type == ProjectileID.SandnadoFriendly)
+                    iceVortexPos = proj.Center;
+                else if (proj.type == ProjectileID.SandnadoHostile)
+                    fireVortexPos = proj.Center;
             }
+        }
 
-            // Crear vórtices duales
-            if (attackTimer == 60)
+        // Lanzar cristales desde tornado de hielo
+        LaunchFromTornado(iceVortexPos, target, 0); // Hielo
+
+        // Lanzar bolitas de fuego desde tornado de fuego
+        LaunchFromTornado(fireVortexPos, target, 1); // Fuego
+    }
+
+    // Partículas de tornado
+    if (attackTimer > 60 && attackTimer % 5 == 0)
+    {
+        // Buscar posiciones actuales de los tornados para partículas
+        Vector2 iceVortexPos = target.Center + new Vector2(-200f, 0);
+        Vector2 fireVortexPos = target.Center + new Vector2(200f, 0);
+        
+        for (int i = 0; i < Main.maxProjectiles; i++)
+        {
+            Projectile proj = Main.projectile[i];
+            if (proj.active)
             {
-                // Crear vórtice de hielo a la izquierda
-                Vector2 iceVortexPos = target.Center + new Vector2(-200f, 0);
-                Projectile.NewProjectile(NPC.GetSource_FromAI(), iceVortexPos, Vector2.Zero,
-                    ProjectileID.FrostBeam, NPC.damage / 3, 0f); // Placeholder - usar proyectil personalizado
-
-                // Crear vórtice de fuego a la derecha  
-                Vector2 fireVortexPos = target.Center + new Vector2(200f, 0);
-                Projectile.NewProjectile(NPC.GetSource_FromAI(), fireVortexPos, Vector2.Zero,
-                    ProjectileID.Fireball, NPC.damage / 3, 0f); // Placeholder - usar proyectil personalizado
-
-                SoundEngine.PlaySound(SoundID.Item62, NPC.Center); // Sonido épico
+                if (proj.type == ProjectileID.SandnadoFriendly)
+                    iceVortexPos = proj.Center;
+                else if (proj.type == ProjectileID.SandnadoHostile)
+                    fireVortexPos = proj.Center;
             }
+        }
 
-            // Efectos visuales durante el ataque
-            if (attackTimer > 60 && attackTimer % 10 == 0)
+        CreateTornadoParticles(iceVortexPos, 0); // Hielo
+        CreateTornadoParticles(fireVortexPos, 1); // Fuego
+    }
+
+    if (attackTimer >= 240)
+    {
+        // Limpiar tornados restantes
+        for (int i = 0; i < Main.maxProjectiles; i++)
+        {
+            Projectile proj = Main.projectile[i];
+            if (proj.active && (proj.type == ProjectileID.SandnadoFriendly || proj.type == ProjectileID.SandnadoHostile))
             {
-                CreateDualElementExplosion(target.Center + new Vector2(-200f, 0), 0); // Hielo
-                CreateDualElementExplosion(target.Center + new Vector2(200f, 0), 1);  // Fuego
+                proj.Kill();
             }
+        }
+        
+        FinishAttack();
+    }
+}
+        private void LaunchFromTornado(Vector2 tornadoCenter, Player target, int element)
+{
+    if (element == 0) // Hielo - lanzar cristales
+    {
+        // Lanzar 2-3 cristales en diferentes direcciones
+        for (int i = 0; i < 3; i++)
+        {
+            Vector2 baseDirection = (target.Center - tornadoCenter).SafeNormalize(Vector2.UnitX);
+            Vector2 shootDirection = baseDirection.RotatedBy(MathHelper.ToRadians(Main.rand.Next(-30, 31)));
+            
+            Projectile.NewProjectile(NPC.GetSource_FromAI(), 
+                tornadoCenter + Main.rand.NextVector2Circular(20f, 20f),
+                shootDirection * Main.rand.NextFloat(6f, 10f),
+                ProjectileID.FrostBeam , NPC.damage / 4, 0f);
+        }
+        
+        // Sonido de cristales
+        SoundEngine.PlaySound(SoundID.Item28, tornadoCenter);
+    }
+    else // Fuego - lanzar bolitas de fuego
+    {
+        // Lanzar 2-3 bolitas de fuego
+        for (int i = 0; i < 3; i++)
+        {
+            Vector2 baseDirection = (target.Center - tornadoCenter).SafeNormalize(Vector2.UnitX);
+            Vector2 shootDirection = baseDirection.RotatedBy(MathHelper.ToRadians(Main.rand.Next(-30, 31)));
+            
+            Projectile.NewProjectile(NPC.GetSource_FromAI(), 
+                tornadoCenter + Main.rand.NextVector2Circular(20f, 20f),
+                shootDirection * Main.rand.NextFloat(6f, 10f),
+                ProjectileID.Fireball, NPC.damage / 4, 0f);
+        }
+        
+        // Sonido de fuego
+        SoundEngine.PlaySound(SoundID.Item34, tornadoCenter);
+    }
+}
+private void CreateTornadoParticles(Vector2 center, int element)
+        {
+            int dustType = element == 0 ? DustID.Ice : DustID.Torch;
+            Color dustColor = element == 0 ? Color.LightCyan : Color.Orange;
 
-            if (attackTimer >= 240) // 4 segundos de duración
+            // Crear partículas en espiral
+            for (int i = 0; i < 6; i++)
             {
-                FinishAttack();
+               float angle = (attackTimer * 0.3f) + (i * (MathHelper.Pi / 3f));
+                float radius = 30f + (float)Math.Sin(attackTimer * 0.1f) * 15f;
+
+                Vector2 spiralPos = center + new Vector2(
+                    (float)Math.Cos(angle) * radius,
+                    (float)Math.Sin(angle) * radius
+                );
+
+                Vector2 spiralVel = new Vector2(
+                    (float)Math.Cos(angle + MathHelper.PiOver2) * 2f,
+                    -1f // Hacia arriba
+                );
+
+                Dust tornadoDust = Dust.NewDustDirect(spiralPos, 0, 0, dustType,
+                    spiralVel.X, spiralVel.Y, Scale: 1.2f);
+                tornadoDust.color = dustColor;
+                tornadoDust.noGravity = true;
             }
         }
 
@@ -557,7 +715,11 @@ namespace ClassesSellers.Content.NPCs.Cryoboros
             for (int i = -1; i <= 1; i++)
             {
                 Vector2 shootVel = direction.RotatedBy(MathHelper.ToRadians(15 * i)) * 10f;
-                Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, shootVel,
+
+                // Opcional: Pequeño offset para que no salgan del mismo pixel
+                Vector2 spawnPos = NPC.Center + new Vector2(i * 5f, 0);
+
+                Projectile.NewProjectile(NPC.GetSource_FromAI(), spawnPos, shootVel,
                     ProjectileID.FrostBeam, NPC.damage / 3, 0f);
             }
 
@@ -662,11 +824,11 @@ namespace ClassesSellers.Content.NPCs.Cryoboros
             float distance = Vector2.Distance(NPC.Center, target.Center);
             isEnraged = distance > 1000f;
 
-            if (isEnraged)
+            if (attackTimer % 15 == 0) // Solo cada 15 frames
             {
                 NPC.damage = (int)(NPC.defDamage * 1.5f);
                 // Crear polvo de enfado
-                if (Main.rand.NextBool(10))
+                if (Main.rand.NextBool(20))
                 {
                     Dust.NewDust(NPC.position, NPC.width, NPC.height, DustID.Smoke, Scale: 2f);
                 }
@@ -787,7 +949,7 @@ namespace ClassesSellers.Content.NPCs.Cryoboros
         {
             // Agregar drops personalizados aquí
             // npcLoot.Add(ItemDropRule.Common(ModContent.ItemType<CryoborosScale>(), 1, 15, 25));
-            npcLoot.Add(ItemDropRule.Common(ModContent.ItemType<FrutaDelCataclismo>(), 1, 1, 1));
+            npcLoot.Add(ItemDropRule.Common(ModContent.ItemType<FrutaDelCataclismo>(), 1, 2, 3));
             npcLoot.Add(ItemDropRule.Common(ItemID.SoulofFright, 1, 5, 10));
         }
 
